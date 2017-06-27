@@ -1,0 +1,11 @@
+{
+  "name": "jquery-menu-aim",
+  "version": "1.0.0",
+  "description": "Fork of the banesto/jQuery-menu-aim repository",
+  "main": "jquery.menu-aim.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SportScheck/jQuery-menu-aim.git"
+  },
+  "license": "MIT"
+}

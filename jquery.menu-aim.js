@@ -53,6 +53,7 @@
         activationDelay:    300,      // Delay (ms) for first submenu opening
         mouseLocsTracked:   3,        // Number of past mouse locations to track direction
         defaultDelay:       300,      // Delay (ms) when user appears to be entering submenu
+        exitDelay:          300,      // Delay (ms) for keeping menu open after user exits menu
 
         enterCallback:      $.noop,   // Function to call when mouse enters a menu row. Entering a row does not mean
                                       // the row has been activated, as the user may be mousing over to a submenu.
@@ -81,6 +82,7 @@
       this.lastDelayLoc = null,
       this.timeoutId    = null,
       this.openDelayId  = null,
+      this.outsideMenu  = null,
       this.isOnClick    = $.inArray(this.options.triggerEvent, ['both', 'click']) > -1,
       this.isOnHover    = $.inArray(this.options.triggerEvent, ['both', 'hover']) > -1;
 
@@ -294,9 +296,16 @@
 
       if (prevLoc.x < offset.left || prevLoc.x > lowerRight.x ||
           prevLoc.y < offset.top || prevLoc.y > lowerRight.y) {
-        // If the previous mouse location was outside of the entire
-        // menu's bounds, immediately activate.
-        return 0;
+
+        // If mouse outside menu, activate immediately
+        if (this.outsideMenu) {
+          this.outsideMenu = false;
+          return 0;
+        // If move outside menu, delay closing submenu
+        } else {
+          this.outsideMenu = true;
+          return this.options.exitDelay;
+        }
       }
 
       if (this.lastDelayLoc && loc.x == this.lastDelayLoc.x && loc.y == this.lastDelayLoc.y) {
@@ -376,7 +385,7 @@
     },
 
     _hoverTriggerOn: function() {
-      $(this.el).on('mouseleave', { obj: this}, this._mouseLeaveMenu )
+      $(this.el).on('mouseleave', { obj: this}, this._mouseLeaveMenu)
         .find(this.options.rowSelector)
           .on('mouseenter', { obj: this}, this._mouseEnterRow)
           .on('mouseleave', { obj: this}, this._mouseLeaveRow);

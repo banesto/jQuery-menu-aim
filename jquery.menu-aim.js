@@ -50,6 +50,7 @@
         openClassName:      "open",   // Class that will be applied to menu item when activated
 
         tolerance:          75,       // Bigger = more tolerant for mouse movement precision when entering submenu
+        exitTolerance:      30,       // Bigger = more tolerant for mouse movement outside menu
         activationDelay:    300,      // Delay (ms) for first submenu opening
         mouseLocsTracked:   3,        // Number of past mouse locations to track direction
         defaultDelay:       300,      // Delay (ms) when user appears to be entering submenu
@@ -295,7 +296,8 @@
       }
 
       if (prevLoc.x < offset.left || prevLoc.x > lowerRight.x ||
-          prevLoc.y < offset.top || prevLoc.y > lowerRight.y) {
+          (prevLoc.y < (offset.top + this.options.exitTolerance) && (loc.y < offset.top + 5)) ||
+          prevLoc.y > lowerRight.y) {
 
         // If mouse outside menu, activate immediately
         if (this.outsideMenu) {
